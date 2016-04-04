@@ -10,7 +10,7 @@
         <title>JFJ Calculator</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="./img/favicon.png">
+        <link rel="icon" type="image/png" href="./img/calculator.png">
 
         <!-- CSS -->
         <link rel="stylesheet" href="css/style.css">
