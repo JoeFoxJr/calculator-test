@@ -103,6 +103,10 @@ button {
   margin-bottom: 4px;
 }
 
+.active-operator {
+/*  border: 2px solid #6698FF; */
+  border: 2px solid #E41B17;
+}
 
 
 
