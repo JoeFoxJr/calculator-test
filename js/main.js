@@ -15,7 +15,7 @@ $(document).ready(function(){
   $("#one").click(function(){
     if (active=="input") {
       onscreen = onscreen+"1";
-      input = number(onscreen);
+      input = Number(onscreen);
       setScreen("input");
     }
     else if (active=="calculation") {
