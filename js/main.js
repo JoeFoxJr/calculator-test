@@ -4,6 +4,7 @@ var input = 0;
 var calculation = 1000;
 var onscreen = "";
 var active = "input";
+var operatorActive = false;
 
 // Main function on load
 $(document).ready(function(){
@@ -13,11 +14,15 @@ $(document).ready(function(){
 
   $("#one").click(function(){
     if (active=="input") {
-      // onscreen = onscreen+"1";
-      // input = number(onscreen);
-      // setScreen("input");
-      setScreen("calculation");
+      onscreen = onscreen+"1";
+      input = number(onscreen);
+      setScreen("input");
     }
+    else if (active=="calculation") {
+      input = 1;
+      setScreen("input");
+    }
+
   });
 
 
