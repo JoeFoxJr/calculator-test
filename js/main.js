@@ -50,7 +50,15 @@ $(document).ready(function(){
   $("#eight").click(function(){clickDigit(8);});
   $("#nine").click(function(){clickDigit(9);});
 
-  // Set active operator upon clicking any one
+  // Define decimal point button behavior
+  $("#decimal").click(function(){
+    if (decimalActive == false) {
+      decimalActive = true;
+      decimalPoints = 0;
+    }
+  });
+
+  // Set active operator (exclusive) upon clicking any operator
   $("#add").click(function(){
     operatorActive = true;
     activeOperator = "add";
@@ -61,7 +69,7 @@ $(document).ready(function(){
   });
   $("#subtract").click(function(){
     operatorActive = true;
-    activeOperator = "add";
+    activeOperator = "subtract";
     $("#add").removeClass("active-operator");
     $("#subtract").addClass("active-operator");
     $("#multiply").removeClass("active-operator");
@@ -69,7 +77,7 @@ $(document).ready(function(){
   });
   $("#multiply").click(function(){
     operatorActive = true;
-    activeOperator = "add";
+    activeOperator = "multiply";
     $("#add").removeClass("active-operator");
     $("#subtract").removeClass("active-operator");
     $("#multiply").addClass("active-operator");
@@ -77,7 +85,7 @@ $(document).ready(function(){
   });
   $("#divide").click(function(){
     operatorActive = true;
-    activeOperator = "add";
+    activeOperator = "divide";
     $("#add").removeClass("active-operator");
     $("#subtract").removeClass("active-operator");
     $("#multiply").removeClass("active-operator");
@@ -85,9 +93,23 @@ $(document).ready(function(){
   });
 
   // Define clear button behavior
-  // $("#clear").click(function(){
+  $("#clear").click(function(){
+    decimalActive = false;
+    decimalPoints = 0;
+    operatorActive = false;
+    activeOperator = "";
+    $("#add").removeClass("active-operator");
+    $("#subtract").removeClass("active-operator");
+    $("#multiply").removeClass("active-operator");
+    $("#divide").removeClass("active-operator");
 
-  // });
+    if (active == "calculation") {
+      calculation = 0;
+    }
+
+    input = 0;
+    setScreen("input");
+  });
 
 
 
@@ -100,15 +122,22 @@ $(document).ready(function(){
 // The argument must be either "input" or "calculation"
 function setScreen(stringI) {
   if (stringI=="input") {
-    onscreen = input.toString();
-    active = "input";
-    if (input==0) {
-      clearText = "AC";
+    if (decimalPoints > 19) {
+      onscreen = "ERR:decimals";
     }
+
     else {
-      clearText = "C";
+      onscreen = input.toFixed(decimalPoints);
+      active = "input";
+      if (input==0) {
+        clearText = "AC";
+      }
+      else {
+        clearText = "C";
+      }
     }
   }
+
   else if (stringI=="calculation") {
     onscreen = calculation.toString();
     active = "calculation";
@@ -118,9 +147,13 @@ function setScreen(stringI) {
     onscreen = "ERROR";
   }
 
+  // if (decimalActive && (decimalPoints == 0)) {
+  //   onscreen += ".";
+  // }
   $("#screen-contents").text(onscreen);
 
   $("#clear").text(clearText);
+
 }
 
 
@@ -129,7 +162,8 @@ function setScreen(stringI) {
 function clickDigit(number) {
   if (active=="input") {
       if (decimalActive) {
-        input += Math.pow(10,(-1)*(decimalPoints+1));
+      decimalPoints ++;
+      input += number*Math.pow(10,(-1)*(decimalPoints));
       }
       else {
         input = (input*10)+number;
