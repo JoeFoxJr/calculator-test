@@ -10,6 +10,10 @@ button {
   padding: 0px;
 }
 
+button:focus {
+  outline:0;
+}
+
 .calculator {
   position: relative;
   margin: auto;

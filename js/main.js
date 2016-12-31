@@ -4,27 +4,33 @@
 // Define global variables
 // Saved input value (number)
 var input = 0;
+
 // Saved calculation value (number)
-
 var calculation = 0;
-// What is displayed on screen (string)
 
+// What is displayed on screen (string)
 var onscreen = "";
 
 // Designates active value (string) (can equal "calculation" or "input")
+// Active value is the value last printed to the screen
 var active = "calculation";
 
 // Designates if operator is active (bool)
 var operatorActive = false;
 
-// Designates active operator (string) (can equal "add", "subtract", "multiply", or "divide")
+// Designates active operator (string)
+// (can equal "add", "subtract", "multiply", or "divide")
 var activeOperator = "";
 
-// Designates if decimal is active (bool)
+// True if decimal is active for input value (bool)
 var decimalActive = false;
 
 // # of active decimal points for input value (number)
 var decimalPoints = 0;
+
+// # of active digit points for input value (number)
+// this is the number of digits to the left of the decimal
+var digitPoints = 0;
 
 // Text displayed on the clear button (string) (can equal "C" or "AC")
 var clearText = "";
@@ -56,6 +62,24 @@ $(document).ready(function(){
       decimalActive = true;
       decimalPoints = 0;
     }
+  });
+
+  // Define negative button behavior
+  $("#negative").click(function(){
+    if (active=="input") {
+      input = (-1)*input;
+      setScreen("input");
+    }
+
+    else if (active=="calculation") {
+      input = (-1)*calculation;
+      setScreen("input");
+    }
+
+    else {
+      setScreen("ERROR");
+    }
+
   });
 
   // Set active operator (exclusive) upon clicking any operator
@@ -96,6 +120,7 @@ $(document).ready(function(){
   $("#clear").click(function(){
     decimalActive = false;
     decimalPoints = 0;
+    digitPoints = 0;
     operatorActive = false;
     activeOperator = "";
     $("#add").removeClass("active-operator");
@@ -111,7 +136,8 @@ $(document).ready(function(){
     setScreen("input");
   });
 
-
+  // Define equals button behavior
+  $("#equals").click(function(){equate();});
 
 });
 
@@ -122,20 +148,19 @@ $(document).ready(function(){
 // The argument must be either "input" or "calculation"
 function setScreen(stringI) {
   if (stringI=="input") {
-    if (decimalPoints > 19) {
-      onscreen = "ERR:decimals";
+
+    onscreen = input.toFixed(decimalPoints);
+    //var onscreen1 = onscreen.toLocaleString("en"); //this is an idea for later
+    active = "input";
+
+    if (input==0) {
+      clearText = "AC";
     }
 
     else {
-      onscreen = input.toFixed(decimalPoints);
-      active = "input";
-      if (input==0) {
-        clearText = "AC";
-      }
-      else {
-        clearText = "C";
-      }
+      clearText = "C";
     }
+
   }
 
   else if (stringI=="calculation") {
@@ -143,15 +168,12 @@ function setScreen(stringI) {
     active = "calculation";
     clearText = "AC";
   }
+
   else {
     onscreen = "ERROR";
   }
 
-  // if (decimalActive && (decimalPoints == 0)) {
-  //   onscreen += ".";
-  // }
   $("#screen-contents").text(onscreen);
-
   $("#clear").text(clearText);
 
 }
@@ -161,24 +183,79 @@ function setScreen(stringI) {
 // Takes the number clicked as an argument (1-9)
 function clickDigit(number) {
   if (active=="input") {
-      if (decimalActive) {
+
+    if ((decimalPoints + digitPoints) > 9) {
+      return;
+    }
+
+    if (decimalActive) {
       decimalPoints ++;
-      input += number*Math.pow(10,(-1)*(decimalPoints));
+
+      if (input >= 0) {
+        input += number*Math.pow(10,(-1)*(decimalPoints));
       }
+
       else {
-        input = (input*10)+number;
+        input -= number*Math.pow(10,(-1)*(decimalPoints));
       }
+    }
+
+    else {
+      digitPoints ++;
+      input = (input*10)+number;
+    }
+
     setScreen("input");
+
   }
 
   else if (active=="calculation") {
     input = number;
     setScreen("input");
   }
+
   else {
     setScreen("ERROR");
   }
+
 }
+
+
+// Function that determines the answer based on current state of the system
+// Performs the active operation on the calculation using the input
+// Is called whenever the "#equals" button or any of the operator buttons are pressed
+function equate() {
+
+  switch (activeOperator) {
+    case "add":
+      calculation += input;
+      break;
+    case "subtract":
+      calculation -= input;
+      break;
+    case "multiply":
+      calculation = calculation*input;
+      break;
+    case "divide":
+      calculation = calculation/input;
+      break;
+    default:
+      calculation = input;
+  }
+
+  $("#add").removeClass("active-operator");
+  $("#subtract").removeClass("active-operator");
+  $("#multiply").removeClass("active-operator");
+  $("#divide").removeClass("active-operator");
+
+  setScreen("calculation");
+
+}
+
+
+
+
+
 
 
 
