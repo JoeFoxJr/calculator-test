@@ -45,16 +45,46 @@ $(document).ready(function(){
 
   // Call the clickDigit function on click of 0-9
   // Pass the clickDigit function the number (0-9) clicked
-  $("#zero").click(function(){clickDigit(0);});
-  $("#one").click(function(){clickDigit(1);});
-  $("#two").click(function(){clickDigit(2);});
-  $("#three").click(function(){clickDigit(3);});
-  $("#four").click(function(){clickDigit(4);});
-  $("#five").click(function(){clickDigit(5);});
-  $("#six").click(function(){clickDigit(6);});
-  $("#seven").click(function(){clickDigit(7);});
-  $("#eight").click(function(){clickDigit(8);});
-  $("#nine").click(function(){clickDigit(9);});
+  $("#zero").click(function(){
+    clickDigit(0);
+    updateOnscreenVariables();
+  });
+  $("#one").click(function(){
+    clickDigit(1);
+    updateOnscreenVariables();
+  });
+  $("#two").click(function(){
+    clickDigit(2);
+    updateOnscreenVariables();
+  });
+  $("#three").click(function(){
+    clickDigit(3);
+    updateOnscreenVariables();
+  });
+  $("#four").click(function(){
+    clickDigit(4);
+    updateOnscreenVariables();
+  });
+  $("#five").click(function(){
+    clickDigit(5);
+    updateOnscreenVariables();
+  });
+  $("#six").click(function(){
+    clickDigit(6);
+    updateOnscreenVariables();
+  });
+  $("#seven").click(function(){
+    clickDigit(7);
+    updateOnscreenVariables();
+  });
+  $("#eight").click(function(){
+    clickDigit(8);
+    updateOnscreenVariables();
+  });
+  $("#nine").click(function(){
+    clickDigit(9);
+    updateOnscreenVariables();
+  });
 
   // Define decimal point button behavior
   $("#decimal").click(function(){
@@ -62,6 +92,7 @@ $(document).ready(function(){
       decimalActive = true;
       decimalPoints = 0;
     }
+    updateOnscreenVariables();
   });
 
   // Define negative button behavior
@@ -73,71 +104,150 @@ $(document).ready(function(){
 
     else if (active=="calculation") {
       input = (-1)*calculation;
+      operatorActive = false;
+      activeOperator = "";
       setScreen("input");
     }
 
     else {
       setScreen("ERROR");
     }
+    updateOnscreenVariables();
 
   });
 
   // Set active operator (exclusive) upon clicking any operator
   $("#add").click(function(){
+    if (operatorActive) {
+      equate();
+    };
+
+    if (active == "input") {
+      calculation = input;
+    }
+
+    else if (active == "calculation") {
+      input = calculation;
+    }
+
     operatorActive = true;
     activeOperator = "add";
+    decimalActive = false;
+    active = "calculation";
+    decimalPoints = 0;
+    digitPoints = 0;
     $("#add").addClass("active-operator");
     $("#subtract").removeClass("active-operator");
     $("#multiply").removeClass("active-operator");
     $("#divide").removeClass("active-operator");
+    updateOnscreenVariables();
   });
   $("#subtract").click(function(){
+    if (operatorActive) {
+      equate();
+    };
+
+    if (active == "input") {
+      calculation = input;
+    }
+
+    else if (active == "calculation") {
+      input = calculation;
+    }
+
     operatorActive = true;
     activeOperator = "subtract";
+    decimalActive = false;
+    active = "calculation";
+    decimalPoints = 0;
+    digitPoints = 0;
     $("#add").removeClass("active-operator");
     $("#subtract").addClass("active-operator");
     $("#multiply").removeClass("active-operator");
     $("#divide").removeClass("active-operator");
+    updateOnscreenVariables();
   });
   $("#multiply").click(function(){
+    if (operatorActive) {
+      equate();
+    };
+
+    if (active == "input") {
+      calculation = input;
+    }
+
+    else if (active == "calculation") {
+      input = calculation;
+    }
+
     operatorActive = true;
     activeOperator = "multiply";
+    decimalActive = false;
+    active = "calculation";
+    decimalPoints = 0;
+    digitPoints = 0;
     $("#add").removeClass("active-operator");
     $("#subtract").removeClass("active-operator");
     $("#multiply").addClass("active-operator");
     $("#divide").removeClass("active-operator");
+    updateOnscreenVariables();
   });
   $("#divide").click(function(){
+    if (operatorActive) {
+      equate();
+    };
+
+    if (active == "input") {
+      calculation = input;
+    }
+
+    else if (active == "calculation") {
+      input = calculation;
+    }
+
     operatorActive = true;
     activeOperator = "divide";
+    decimalActive = false;
+    active = "calculation";
+    decimalPoints = 0;
+    digitPoints = 0;
     $("#add").removeClass("active-operator");
     $("#subtract").removeClass("active-operator");
     $("#multiply").removeClass("active-operator");
     $("#divide").addClass("active-operator");
+    updateOnscreenVariables();
   });
 
   // Define clear button behavior
   $("#clear").click(function(){
-    decimalActive = false;
-    decimalPoints = 0;
-    digitPoints = 0;
-    operatorActive = false;
-    activeOperator = "";
-    $("#add").removeClass("active-operator");
-    $("#subtract").removeClass("active-operator");
-    $("#multiply").removeClass("active-operator");
-    $("#divide").removeClass("active-operator");
+    if (input ==0) {
+      operatorActive = false;
+      activeOperator = "";
+      calculation = 0;
+      $("#add").removeClass("active-operator");
+      $("#subtract").removeClass("active-operator");
+      $("#multiply").removeClass("active-operator");
+      $("#divide").removeClass("active-operator");
+    }
 
     if (active == "calculation") {
       calculation = 0;
     }
 
+    decimalActive = false;
+    decimalPoints = 0;
+    digitPoints = 0;
     input = 0;
+
     setScreen("input");
+    updateOnscreenVariables();
   });
 
   // Define equals button behavior
-  $("#equals").click(function(){equate();});
+  $("#equals").click(function(){
+    equate();
+    updateOnscreenVariables();
+  });
 
 });
 
@@ -201,8 +311,16 @@ function clickDigit(number) {
     }
 
     else {
-      digitPoints ++;
-      input = (input*10)+number;
+
+      if (input == 0 && number ==0) {
+        return
+      }
+
+      else {
+        digitPoints ++;
+        input = (input*10)+number;
+      }
+
     }
 
     setScreen("input");
@@ -211,6 +329,8 @@ function clickDigit(number) {
 
   else if (active=="calculation") {
     input = number;
+    digitPoints++;
+
     setScreen("input");
   }
 
@@ -254,8 +374,20 @@ function equate() {
 
 
 
-
-
+// Function that is used to display javascript variables on page during debugging
+// This function should be called at the end of every other function while debugging
+function updateOnscreenVariables() {
+  $('.input').html(input);
+  $('.calculation').html(calculation);
+  $('.onscreen').html(onscreen);
+  $('.active').html(active);
+  $('.operatorActive').html(operatorActive);
+  $('.activeOperator').html(activeOperator);
+  $('.decimalActive').html(decimalActive);
+  $('.decimalPoints').html(decimalPoints);
+  $('.digitPoints').html(digitPoints);
+  $('.clearText').html(clearText);
+}
 
 
 
