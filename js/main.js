@@ -318,7 +318,15 @@ function clickDigit(number) {
 
       else {
         digitPoints ++;
-        input = (input*10)+number;
+
+        if (input >= 0) {
+          input = (input*10)+number;
+        }
+
+        else {
+          input = (input*10)-number;
+        }
+
       }
 
     }
