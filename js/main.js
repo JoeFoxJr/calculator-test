@@ -33,7 +33,7 @@ var decimalPoints = 0;
 var digitPoints = 0;
 
 // Text displayed on the clear button (string) (can equal "C" or "AC")
-var clearText = "";
+var clearText = "AC";
 
 
 // Main function on load
@@ -239,6 +239,8 @@ $(document).ready(function(){
     digitPoints = 0;
     input = 0;
 
+    clearText = "AC";
+
     setScreen("input");
     updateOnscreenVariables();
   });
@@ -276,7 +278,7 @@ function setScreen(stringI) {
   else if (stringI=="calculation") {
     onscreen = calculation.toString();
     active = "calculation";
-    clearText = "AC";
+    //clearText = "AC";
   }
 
   else {
@@ -337,7 +339,7 @@ function clickDigit(number) {
 
   else if (active=="calculation") {
     input = number;
-    digitPoints++;
+    digitPoints=1;
 
     setScreen("input");
   }
@@ -371,10 +373,10 @@ function equate() {
       calculation = input;
   }
 
-  $("#add").removeClass("active-operator");
-  $("#subtract").removeClass("active-operator");
-  $("#multiply").removeClass("active-operator");
-  $("#divide").removeClass("active-operator");
+  //$("#add").removeClass("active-operator");
+  //$("#subtract").removeClass("active-operator");
+  //$("#multiply").removeClass("active-operator");
+  //$("#divide").removeClass("active-operator");
 
   setScreen("calculation");
 
